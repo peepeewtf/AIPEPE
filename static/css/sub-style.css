@@ -1,0 +1,14 @@
+body { background: #04131D; }
+
+@media all and (min-width: 992px) { .zphero h2 { font-size: 4.3em; line-height: 1.2; } }
+.zphero .zsmargin-top-none { margin-top: 0px; }
+
+@media all and (min-width: 992px) { .zscustom-section-portfolio-dark-01 .zspadding-box { padding: 35px; border-radius: 10px; } }
+
+@media all and (min-width: 992px) { .zptabelem-inner-container.zptabs-style-01.zptab-type-03 .zptab { padding: 10px 30px; } }
+
+.zsgoogle-map { filter: invert(1.8); }
+
+.theme-footer-area { background: #04131D; }
+.theme-footer-area.zpdark-section { color: #626878; }
+.theme-footer-area.zpdark-section h1, .theme-footer-area.zpdark-section h2, .theme-footer-area.zpdark-section h3, .theme-footer-area.zpdark-section h4, .theme-footer-area.zpdark-section h5, .theme-footer-area.zpdark-section h6 { color: #FFFFFF; }
