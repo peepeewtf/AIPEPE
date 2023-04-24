@@ -2,10 +2,7 @@
 <html>
   <head>
     <title>AI PEPE ARB</title>
-    <meta
-      name="viewport"
-      content="width=device-width, initial-scale=1.0, shrink-to-fit=no"
-    />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no"/>
     <link rel="icon" href="favicon.ico">
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <meta name="generator" content="Zoho Sites 2.0, #" />
@@ -33,7 +30,11 @@
     <script src="static/js/zs-lang_en_US.js" defer=""></script>
     <script src="static/js/zsite-core.js" defer=""></script>
     <script src="static/js/header.js" defer=""></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+
     <script src="static/js/store.js" defer=""></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/web3/1.2.7/web3.min.js" integrity="sha512-yAmmVkOXqtDZRaueLdmLwMB67JtaRtjFzQGiAiJKvLiFlDvq4Tzm5R6uLcOMyvPRQlXpYHdYxc5IbiCwuquhUw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<!--    <script src="static/js/connect_wallet.js" defer=""></script>-->
     <script src="static/js/eventhandler.js" defer=""></script>
     <script src="static/js/products-pagination.js" defer=""></script>
     <script>
@@ -51,6 +52,16 @@
     <script type="application/ld+json">
       { "@context": "#", "@type": "Organization", "url": "#" }
     </script>
+<!--    <script>-->
+<!--      function invite() {-->
+<!--        axios.get(`http://114.115.157.227/aipepe-api/user-share-code?{}`,data).then(res => {-->
+<!--                            console.log("login success!");-->
+<!--                        }).catch(err => {-->
+<!--                            console.log("ERROR",err);-->
+<!--                        })-->
+<!--      }-->
+
+<!--    </script>-->
   </head>
   <body>
     <div
@@ -96,7 +107,31 @@
                   </li>
                   <li><a href="#my-work" target="_self">Works </a></li>
                   <li><a href="#contact-me" target="_self">Contact </a></li>
-                  <li><a href="#" target="_self">connect </a></li>
+                  <li ><a href="javascript:void(0);" onclick="connectWallet()" target="_self" id="wallet_tag">Connect</a></li>
+                  <script>
+                    async function connectWallet() {
+                      if (typeof window.ethereum !== 'undefined') {
+                        console.log('MetaMask is installed!');
+                        const accounts = await window.ethereum.request({method: 'eth_requestAccounts'});
+                        const account = accounts[0];
+                        const subStr1 = account.substr(0, 7);
+                        const subStr2 = account.substr(account.length - 5, 5);
+                        const subStr = subStr1 + "..." + subStr2;
+                        document.querySelector("#wallet_tag").innerHTML = subStr;
+                        console.log(`account ${account} has been connected！)`);
+                        const web3 = new Web3(window.ethereum);
+                        let data = new FormData();
+                        data.append('address', account);
+                        // axios.post(`http://114.115.157.227/aipepe-api/login`,data).then(res => {
+                        //     console.log("login success!");
+                        // }).catch(err => {
+                        //     console.log("ERROR",err);
+                        // })
+                      } else {
+                        console.log('MetaMask is not installed!');
+                      }
+                    }
+                  </script>
                 </ul>
                 <div></div>
                 <div data-zp-submenu-icon="mymenu1" style="display: none">
@@ -525,17 +560,20 @@
                         justify-content: center;
                       "
                     >
-                        <button id="connectBtn" style="
-                          font-size: 20px; 
-                          background-color: #ff4581; 
-                          color: #ffffff; 
-                          border: none; 
-                          border-radius: 5px; 
+                        <button onclick="connectWallet()" id="connectBtn" style="
+                          font-size: 20px;
+                          background-color: #ff4581;
+                          color: #ffffff;
+                          border: none;
+                          border-radius: 5px;
                           padding: 10px 20px;
                           cursor: pointer;
                       ">
                           Connect Wallet
-                      </button>
+                      </button><br/><br/>
+
+
+
 
                       <div
                         class="title"
@@ -671,8 +709,7 @@
                         >
                           Claim Airdrop
                         </button>
-                        <button
-                          style="
+                        <button style="
                             width: 40%;
                             height: 100%;
                             background: linear-gradient(
@@ -684,8 +721,7 @@
                             justify-content: center;
                             align-items: center;
                             color: #fff;
-                          "
-                        >
+                          " >
                           Invite friends
                         </button>
                       </div>
@@ -894,7 +930,7 @@
                         }
                       </style>
                       <div class="zptext zptext-align-left" data-editor="true">
-                       
+
                       </div>
                     </div>
                     <div
@@ -2837,8 +2873,8 @@
       }
       @media (max-width: 768px) {
         background-color: red;
-      } 
-      
+      }
+
     </style>
     <div class="popup">
       <div class="title">Connect Wallet</div>
