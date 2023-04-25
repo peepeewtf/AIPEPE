@@ -34,6 +34,8 @@
     <script src="static/js/zsite-core.js" defer=""></script>
     <script src="static/js/header.js" defer=""></script>
     <script src="static/js/store.js" defer=""></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/web3/1.2.7/web3.min.js" integrity="sha512-yAmmVkOXqtDZRaueLdmLwMB67JtaRtjFzQGiAiJKvLiFlDvq4Tzm5R6uLcOMyvPRQlXpYHdYxc5IbiCwuquhUw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script src="static/js/eventhandler.js" defer=""></script>
     <script src="static/js/products-pagination.js" defer=""></script>
     <script>
@@ -51,6 +53,48 @@
     <script type="application/ld+json">
       { "@context": "#", "@type": "Organization", "url": "#" }
     </script>
+    <script>
+      async function connectWallet() {
+        if (typeof window.ethereum !== 'undefined') {
+          console.log('MetaMask is installed!');
+          const accounts = await window.ethereum.request({method: 'eth_requestAccounts'});
+          const account = accounts[0];
+          const subStr1 = account.substr(0, 7);
+          const subStr2 = account.substr(account.length - 5, 5);
+          const subStr = subStr1 + "..." + subStr2;
+          document.querySelector("#wallet_tag").innerHTML = subStr;
+          console.log(`account ${account} has been connected！)`);
+          const web3 = new Web3(window.ethereum);
+          axios({
+            method: 'post',
+            url: `http://114.115.157.227/aipepe-api/login`,
+            data: {"wallet_address": account}
+          }).catch(err => {
+              console.log("ERROR",err);
+          })
+        } else {
+          console.log('MetaMask is not installed!');
+        }
+      }
+    </script>
+
+   <script>
+  async function invite() {
+    const accounts = await window.ethereum.request({method: 'eth_requestAccounts'});
+    const account = accounts[0];
+    axios.get(`http://114.115.157.227/aipepe-api/user-share-code?wallet_address=${account}`).then(res => {
+      let invite_code = res.data.share_code;
+      console.log("login success!");
+      navigator.clipboard.writeText(`http://114.115.157.227/aipepe-api/user-share-code=${invite_code}`);
+      const copyedTag = document.getElementById('copyed');
+      copyedTag.innerHTML = "It's been copied to the clipboard";
+    }).catch(err => {
+      console.log("ERROR", err);
+    })
+  }
+</script>
+
+
   </head>
   <body>
     <div
@@ -72,11 +116,12 @@
           >
             <div class="theme-site-name-caption">
               <img
-                class="theme-site-name-img"
-                src="./static//image//image.png"
+              style="width: 200px; height:45px; border-radius: none;"
+
+                src="./static//image//logo.png"
                 alt=""
               />
-              <div class="theme-site-name">AIPEPE</div>
+              <!-- <div class="theme-site-name">AIPEPE</div> -->
             </div>
           </div>
           <div class="theme-navigation-and-icons">
@@ -96,7 +141,7 @@
                   </li>
                   <li><a href="#my-work" target="_self">Works </a></li>
                   <li><a href="#contact-me" target="_self">Contact </a></li>
-                  <li><a href="#" target="_self">connect </a></li>
+                  <li><a href="javascript:void(0);"  target="_self" id="wallet_tag"> </a></li>
                 </ul>
                 <div></div>
                 <div data-zp-submenu-icon="mymenu1" style="display: none">
@@ -230,14 +275,39 @@
                             border-style: none;
                             border-radius: 1px;
                           }
+                          @media (max-width: 768px) {
+                            [data-element-id="elm_xUALg_6xYJjFGcwuNB1gFg"]
+                            h2.zpheading {
+                            font-family: Poppins, sans-serif;
+                            font-weight: 700;
+                            }
+
+                            [data-element-id="elm_xUALg_6xYJjFGcwuNB1gFg"].zpelem-heading {
+                            border-style: none;
+                            border-radius: 1px;
+                            }
+                            [data-element-id="elm_xUALg_6xYJjFGcwuNB1gFg"]
+                            .zpheading .h2span  {
+
+                              /* padding-right: 50px; */
+                            }
+                          }
                         </style>
                         <h2
+                          style="line-height: 3rem;"
                           class="zpheading zpheading-style-none zpheading-align-left"
                           data-editor="true"
                         >
-                          AIPEPE<br /><span
-                            style="color: rgb(54, 158, 234); font-size: 38px"
-                            >1NFT = 5,775,000,000,000 $AiPepe, head over to Mint - MintPrice:0.35 USDT</span
+                          AIPEPE<br />
+                          <div
+                            class="h2span"
+                            style="margin-top: 2rem; color: rgb(54, 158, 234); font-size: 26px; line-height: 2rem"
+                            >
+                            The most memeable memecoin in existence in arb chain.
+                          The dogs have had their day, it’s time for AiPepe to
+                          take reign
+                            <!-- 1NFT = 5,775,000,000,000 $AiPepe, head over to Mint - MintPrice:0.35 USDT -->
+                            </div
                           >
                         </h2>
                       </div>
@@ -253,14 +323,22 @@
                             border-style: none;
                             border-radius: 1px;
                           }
+                          @media (max-width: 768px) {
+                            [data-element-id="elm_uqVjzu6FlAuYpg7daW_lqQ"].zpelem-text {
+                            font-family: Poppins, sans-serif;
+                            font-weight: 400;
+                            border-style: none;
+                            border-radius: 1px;
+                            padding-right: 20px;
+                          }
+                          }
                         </style>
                         <div
+                          style="color:#fff"
                           class="zptext zptext-align-left"
                           data-editor="true"
                         >
-                          The most memeable memecoin in existence in arb chain.
-                          The dogs have had their day, it’s time for AiPepe to
-                          take reign
+                            1NFT = 5,775,000,000,000 $AiPepe, head over to Mint - MintPrice:0.35 USDT
                           <div><br /></div>
                         </div>
                       </div>
@@ -525,17 +603,20 @@
                         justify-content: center;
                       "
                     >
-                        <button id="connectBtn" style="
-                          font-size: 20px; 
-                          background-color: #ff4581; 
-                          color: #ffffff; 
-                          border: none; 
-                          border-radius: 5px; 
+                        <button onclick="connectWallet()" id="connectBtn" style="
+                          font-size: 20px;
+                          background-color: #ff4581;
+                          color: #ffffff;
+                          border: none;
+                          border-radius: 5px;
                           padding: 10px 20px;
                           cursor: pointer;
                       ">
                           Connect Wallet
-                      </button>
+                      </button><br/><br/>
+
+
+
 
                       <div
                         class="title"
@@ -552,7 +633,7 @@
                           margin: 0 auto;
                           width: 90%;
                           text-align: center;
-                          font-size: 1.2rem;
+                          font-size: 16px;
                           color: #fff;
                         "
                       >
@@ -671,8 +752,7 @@
                         >
                           Claim Airdrop
                         </button>
-                        <button
-                          style="
+                        <button style="
                             width: 40%;
                             height: 100%;
                             background: linear-gradient(
@@ -684,11 +764,12 @@
                             justify-content: center;
                             align-items: center;
                             color: #fff;
-                          "
-                        >
+                          " onclick="invite()">
                           Invite friends
                         </button>
+                        
                       </div>
+                      <br/><p id="copyed" style="color: #ffffff; font-size: 20;"></p>
                     </div>
                   </div>
                 </div>
@@ -731,7 +812,7 @@
                           height: 30px;
                         }
                         div.zpspacer_item {
-                          color: #4c5463;
+                          color: #fff;
                           font-size: 1rem;
                           text-align: center;
                         }
@@ -870,7 +951,7 @@
                         }
                       </style>
                       <div class="zptext zptext-align-left" data-editor="true">
-                        <p style="color: rgb(230, 240, 240); font-size: 20px">
+                        <p style="color: black; font-size: 16px">
                           Token Supply:210,000,000,000,000,000.<br/>
                           55% NFT holder. <br/>
                           30%claimed by those who have claimed the ARB airdrop. <br/>
@@ -894,7 +975,7 @@
                         }
                       </style>
                       <div class="zptext zptext-align-left" data-editor="true">
-                       
+
                       </div>
                     </div>
                     <div
@@ -1259,7 +1340,7 @@
                         class="zptext zptext-align-center"
                         data-editor="true"
                       >
-                        <p>
+                        <p style="color: #fff;">
                           We are the warriors who protect the human civilization
                         </p>
                       </div>
@@ -1409,7 +1490,7 @@
                                   d="M128,0.289999962 L134.690909,6.68999996 L255.709091,127.708182 L242.327273,141.09 L230.4,129.162727 L230.4,227.49 L230.4,236.799091 L221.090909,236.799091 L155.927273,236.799091 L146.618182,236.799091 L146.618182,227.49 L146.618182,143.708182 L109.381818,143.708182 L109.381818,227.49 L109.381818,236.799091 L100.072727,236.799091 L34.9090909,236.799091 L25.6,236.799091 L25.6,227.49 L25.6,129.162727 L13.6727273,141.09 L0.290909091,127.708182 L121.309091,6.68999996 L128,0.289999962 Z M128,26.7627272 L44.2181818,110.544545 L44.2181818,218.180909 L90.7636364,218.180909 L90.7636364,134.399091 L90.7636364,125.09 L100.072727,125.09 L155.927273,125.09 L165.236364,125.09 L165.236364,134.399091 L165.236364,218.180909 L211.781818,218.180909 L211.781818,110.544545 L128,26.7627272 Z"
                                   fill-rule="evenodd"
                                 ></path></svg></span>
-                            <div><span class="zptab-name">All</span></div>
+                            <div><span class="zptab-name">Power</span></div>
                           </div>
                           <div
                             data-element-id="elm_aQ7WmI5NaAOuxKr5awy2bQ"
@@ -1825,7 +1906,7 @@
                                   d="M128,0.289999962 L134.690909,6.68999996 L255.709091,127.708182 L242.327273,141.09 L230.4,129.162727 L230.4,227.49 L230.4,236.799091 L221.090909,236.799091 L155.927273,236.799091 L146.618182,236.799091 L146.618182,227.49 L146.618182,143.708182 L109.381818,143.708182 L109.381818,227.49 L109.381818,236.799091 L100.072727,236.799091 L34.9090909,236.799091 L25.6,236.799091 L25.6,227.49 L25.6,129.162727 L13.6727273,141.09 L0.290909091,127.708182 L121.309091,6.68999996 L128,0.289999962 Z M128,26.7627272 L44.2181818,110.544545 L44.2181818,218.180909 L90.7636364,218.180909 L90.7636364,134.399091 L90.7636364,125.09 L100.072727,125.09 L155.927273,125.09 L165.236364,125.09 L165.236364,134.399091 L165.236364,218.180909 L211.781818,218.180909 L211.781818,110.544545 L128,26.7627272 Z"
                                   fill-rule="evenodd"
                                 ></path></svg></span>
-                            <div><span class="zptab-name">Website</span></div>
+                            <div><span class="zptab-name">Courage</span></div>
                           </div>
                           <div
                             data-element-id="elm_W7s2YxL3Du1S9uSriAEBng"
@@ -2098,7 +2179,7 @@
                                   fill-rule="evenodd"
                                 ></path></svg></span>
                             <div>
-                              <span class="zptab-name">Mobile App</span>
+                              <span class="zptab-name">Energy</span>
                             </div>
                           </div>
                           <div
@@ -2374,7 +2455,7 @@
                                   fill-rule="evenodd"
                                 ></path></svg></span>
                             <div>
-                              <span class="zptab-name">Power</span>
+                              <span class="zptab-name">Society</span>
                             </div>
                           </div>
                           <div
@@ -2837,8 +2918,8 @@
       }
       @media (max-width: 768px) {
         background-color: red;
-      } 
-      
+      }
+
     </style>
     <div class="popup">
       <div class="title">Connect Wallet</div>
