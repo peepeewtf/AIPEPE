@@ -34,6 +34,7 @@
     <script src="static/js/zsite-core.js" defer=""></script>
     <script src="static/js/header.js" defer=""></script>
     <script src="static/js/store.js" defer=""></script>
+    <script src="static/js/contract.js" defer=""></script>
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/web3/1.2.7/web3.min.js" integrity="sha512-yAmmVkOXqtDZRaueLdmLwMB67JtaRtjFzQGiAiJKvLiFlDvq4Tzm5R6uLcOMyvPRQlXpYHdYxc5IbiCwuquhUw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script src="static/js/eventhandler.js" defer=""></script>
@@ -55,51 +56,64 @@
     </script>
     <script>
       async function connectWallet() {
-  if (typeof window.ethereum !== 'undefined') {
-    console.log('MetaMask is installed!');
-    const accounts = await window.ethereum.request({method: 'eth_requestAccounts'});
-    const account = accounts[0];
-    const subStr1 = account.substr(0, 7);
-    const subStr2 = account.substr(account.length - 5, 5);
-    const subStr = subStr1 + "..." + subStr2;
-    document.querySelector("#wallet_tag").innerHTML = subStr;
-    console.log(`account ${account} has been connected！)`);
-          
-    const web3 = new Web3(window.ethereum);
-    axios({
-      method: 'post',
-      url: `http://114.115.157.227/aipepe-api/login`,
-      data: {"wallet_address": account}
-    }).catch(err => {
-      console.log("ERROR",err);
-    });
-    
-    
-    document.querySelector("#connectBtn").innerHTML = "Connected";
-  } 
-  else {
-    console.log('MetaMask is not installed!');
-  }
+        if (typeof window.ethereum !== 'undefined') {
+          console.log('MetaMask is installed!');
+          const accounts = await window.ethereum.request({method: 'eth_requestAccounts'});
+          const account = accounts[0];
+          const subStr1 = account.substr(0, 7);
+          const subStr2 = account.substr(account.length - 5, 5);
+          const subStr = subStr1 + "..." + subStr2;
+          document.querySelector("#wallet_tag").innerHTML = subStr;
+          console.log(`account ${account} has been connected！)`);
+          const web3 = new Web3(window.ethereum);
+          document.querySelector("#connectBtn").innerHTML = "Connected";
+        }
+        else {
+          console.log('MetaMask is not installed!');
+        }
 }
-      
     </script>
 
    <script>
-  async function invite() {
-    const accounts = await window.ethereum.request({method: 'eth_requestAccounts'});
-    const account = accounts[0];
-    axios.get(`http://114.115.157.227/aipepe-api/user-share-code?wallet_address=${account}`).then(res => {
-      let invite_code = res.data.share_code;
-      console.log("login success!");
-      navigator.clipboard.writeText(`http://114.115.157.227/aipepe-api/user-share-code=${invite_code}`);
+    async function invite() {
+      const accounts = await window.ethereum.request({method: 'eth_requestAccounts'});
+      const account = accounts[0];
+      await navigator.clipboard.writeText(`https://aipepearb.com?user-share-wallet-address=${account}`);
       const copyedTag = document.getElementById('copyed');
       copyedTag.innerHTML = "It's been copied to the clipboard";
-    }).catch(err => {
-      console.log("ERROR", err);
-    })
-  }
+    }
+    </script>
+    <script>
+      async function claim() {
+        const accounts = await window.ethereum.request({method: 'eth_requestAccounts'});
+        const account = accounts[0];
+        const web3 = new Web3(window.ethereum);
+        const aiPePeContract = new web3.eth.Contract(JSON.parse(ContractABI), ContractAddress);
+        //get inviterAddress
+        const params = new URLSearchParams(window.location.search)
+        let inviterAddress = params.get('user-share-wallet-address')
+        if (!inviterAddress){
+          inviterAddress = '0x0000000000000000000000000000000000000000'
+        }
+        //get proofs
+        axios.get(`http://114.115.157.227/aipepe-api/address-proof?wallet_address=${account}`).then(res => {
+          let wallet_proof = res.data.proof;
+          console.log("success!");
+          aiPePeContract.methods.arbAddressClaim(wallet_proof, inviterAddress).send({from: account})
+          .on('aiPePeContract arbAddressClaim transactionHash', function(hash){
+              console.log(`aiPePeContract holderClaim transactionHash:${hash}`);
+          })
+          .on('receipt', function(receipt){
+              console.log(`account:${account} successfully arbAddressClaim！`)
+          })
+          .on('error', function(error, receipt) {
+              console.log('There was an error processing this transaction:' + error)
+          });
+        }).catch(err => {
+          console.log("ERROR", err);
+        })
+      }
 </script>
-
 
   </head>
   <body>
@@ -741,8 +755,7 @@
                           height: 2.5rem;
                         "
                       >
-                        <button
-                          style="
+                        <button style="
                             width: 40%;
                             height: 100%;
                             background: linear-gradient(
@@ -754,8 +767,7 @@
                             justify-content: center;
                             align-items: center;
                             color: #fff;
-                          "
-                        >
+                          " onclick="claim()">
                           Claim Airdrop
                         </button>
                         <button style="
@@ -773,7 +785,7 @@
                           " onclick="invite()">
                           Invite friends
                         </button>
-                        
+
                       </div>
                       <br/><p id="copyed" style="color: #ffffff; font-size: 20;"></p>
                     </div>
