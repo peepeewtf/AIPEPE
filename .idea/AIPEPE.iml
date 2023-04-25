@@ -4,6 +4,11 @@
     <content url="file://$MODULE_DIR$" />
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
+<<<<<<< HEAD
     <orderEntry type="module" module-name="ethereum_data_analysis" />
+=======
+    <orderEntry type="library" name="axios" level="application" />
+    <orderEntry type="library" name="web3" level="application" />
+>>>>>>> 50d4c3591e8fe1490725e6905c8982e21c4031cb
   </component>
 </module>

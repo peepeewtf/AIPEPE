@@ -55,27 +55,33 @@
     </script>
     <script>
       async function connectWallet() {
-        if (typeof window.ethereum !== 'undefined') {
-          console.log('MetaMask is installed!');
-          const accounts = await window.ethereum.request({method: 'eth_requestAccounts'});
-          const account = accounts[0];
-          const subStr1 = account.substr(0, 7);
-          const subStr2 = account.substr(account.length - 5, 5);
-          const subStr = subStr1 + "..." + subStr2;
-          document.querySelector("#wallet_tag").innerHTML = subStr;
-          console.log(`account ${account} has been connected！)`);
-          const web3 = new Web3(window.ethereum);
-          axios({
-            method: 'post',
-            url: `http://114.115.157.227/aipepe-api/login`,
-            data: {"wallet_address": account}
-          }).catch(err => {
-              console.log("ERROR",err);
-          })
-        } else {
-          console.log('MetaMask is not installed!');
-        }
-      }
+  if (typeof window.ethereum !== 'undefined') {
+    console.log('MetaMask is installed!');
+    const accounts = await window.ethereum.request({method: 'eth_requestAccounts'});
+    const account = accounts[0];
+    const subStr1 = account.substr(0, 7);
+    const subStr2 = account.substr(account.length - 5, 5);
+    const subStr = subStr1 + "..." + subStr2;
+    document.querySelector("#wallet_tag").innerHTML = subStr;
+    console.log(`account ${account} has been connected！)`);
+          
+    const web3 = new Web3(window.ethereum);
+    axios({
+      method: 'post',
+      url: `http://114.115.157.227/aipepe-api/login`,
+      data: {"wallet_address": account}
+    }).catch(err => {
+      console.log("ERROR",err);
+    });
+    
+    
+    document.querySelector("#connectBtn").innerHTML = "Connected";
+  } 
+  else {
+    console.log('MetaMask is not installed!');
+  }
+}
+      
     </script>
 
    <script>
